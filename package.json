@@ -1,6 +1,6 @@
 {
   "name": "oniyi-cache",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "RFC2616 compliant http cache implementation",
   "author": {
     "name": "Benjamin Kroeger",

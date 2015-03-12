@@ -70,6 +70,7 @@ function OniyiCache(args) {
 	// check pre-requisites
 	assert(_.isPlainObject(args), 'args must be provided as plain object');
 
+	self.keyPrefix = 'oniyi-cache:';
 	// extract global validator options
 	self.globalConfig = _.merge({
 		storePrivate: false,
@@ -211,12 +212,14 @@ OniyiCache.prototype.get = function(hash, callback) {
 		callback = _.noop;
 	}
 
-	self.redisClient.hgetall(hash, function(err, data) {
-		if (err) {
-			return callback(err, null);
+	var key = self.keyPrefix + hash;
+
+	self.redisClient.hgetall(key, function(err, data) {
+		if (err || data === null) {
+			return callback(err, data);
 		}
 		if (!data.response) {
-			self.redisClient.del(hash, function(err, result) {
+			self.redisClient.del(key, function(err, result) {
 				if (err) {
 					return logWarn(err);
 				}
@@ -224,6 +227,7 @@ OniyiCache.prototype.get = function(hash, callback) {
 			});
 			return callback(new TypeError('found invalid data in cache'));
 		}
+
 		data.response = JSON.parse(data.response);
 		return callback(null, data);
 	});
@@ -235,22 +239,23 @@ OniyiCache.prototype.put = function(data, callback) {
 	if (!_.isFunction(callback)) {
 		callback = _.noop;
 	}
-	// hash, response, raw, parsed, expireAt
 
-	if (_.isPlainObject(data.response)) {
+	var key = self.keyPrefix + data.hash;
+
+	if (data.response) {
 		data.response = serializeResponseObject(data.response);
 	}
 
 	var saveIt = self.redisClient.multi();
 
-	saveIt.hmset(data.hash, _.pick(data, ['response', 'raw', 'parsed']));
+	saveIt.hmset(key, _.pick(data, ['response', 'raw', 'parsed']));
 
 	if (_.isNumber(data.expireAt)) {
-		saveIt.expireat(data.hash, data.expiresAt);
+		saveIt.expireat(key, data.expireAt);
 	}
 
 	saveIt.exec(function(err, result) {
-		logDebug('stored data in cache. result is %s', result);
+		logDebug('stored data in cache: %s. set timeout: %d', result[0], result[1]);
 		callback(err);
 	});
 
@@ -259,7 +264,13 @@ OniyiCache.prototype.put = function(data, callback) {
 OniyiCache.prototype.purge = function(hash, callback) {
 	var self = this;
 
-	self.redisClient.del(hash, function(err, result) {
+	if (!_.isFunction(callback)) {
+		callback = _.noop;
+	}
+
+	var key = self.keyPrefix + hash;
+
+	self.redisClient.del(key, function(err, result) {
 		if (err) {
 			return logWarn(err);
 		}

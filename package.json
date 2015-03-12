@@ -1,6 +1,6 @@
 {
   "name": "oniyi-cache",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "RFC2616 compliant http cache implementation",
   "author": {
     "name": "Benjamin Kroeger",
@@ -9,7 +9,8 @@
   "repository": "benkroeger/oniyi-cache",
   "license": "MIT",
   "files": [
-    "index.js"
+    "index.js",
+    "lib"
   ],
   "keywords": [
     "oniyi-cache",
@@ -24,7 +25,7 @@
   "dependencies": {
     "debug": "^2.1.2",
     "lodash": "^3.5.0",
-    "make-redis-client": "0.0.2",
+    "make-redis-client": "0.0.3",
     "xxhash": "^0.2.1"
   },
   "devDependencies": {

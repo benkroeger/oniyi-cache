@@ -1,4 +1,6 @@
-#  [![NPM version][npm-image]][npm-url] [![Dependency Status][daviddm-image]][daviddm-url]
+[![NPM info](https://nodei.co/npm/oniyi-cache.png?downloads=true)](https://nodei.co/npm/oniyi-cache.png?downloads=true)
+
+[![dependencies](https://david-dm.org/benkroeger/oniyi-cache.png)](https://david-dm.org/benkroeger/oniyi-cache.png)
 
 > RFC2616 compliant http cache implementation
 

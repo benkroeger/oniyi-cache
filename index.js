@@ -1,28 +1,14 @@
 'use strict';
-var assert = require('assert');
+var assert = require('assert'),
+	util = require('util');
 
 var _ = require('lodash'),
-	debug = require('debug'),
 	makeRedisClient = require('make-redis-client'),
 	XXHash = require('xxhash');
 
 var Evaluator = require('./lib/evaluator');
 
 // variables and functions
-var moduleName = 'oniyi-cache';
-
-
-var logError = debug(moduleName + ':error');
-// set this namespace to log via console.error
-logError.log = console.error.bind(console); // don't forget to bind to console!
-
-var logWarn = debug(moduleName + ':warn');
-// set all output to go via console.warn
-logWarn.log = console.warn.bind(console);
-
-var logDebug = debug(moduleName + ':debug');
-// set all output to go via console.warn
-logDebug.log = console.warn.bind(console);
 
 var includeRequestPropertiesInHash = [
 	'uri',
@@ -50,7 +36,6 @@ var mergeableEvaluatorConfigProperties = [
 var serializableResponseProperties = [
   // 'headers',
   'trailers',
-  'method',
   'statusCode',
   'httpVersion',
   'httpVersionMajor',
@@ -93,12 +78,22 @@ function OniyiCache(args) {
 	self.excludeRequestHeadersFromHash = _.union(excludeRequestHeadersFromHash, (_.isArray(args.excludeRequestHeadersFromHash) ? args.excludeRequestHeadersFromHash : []));
 
 	if (!args.redisClient) {
-		args.redisClient = makeRedisClient(args.redis);
+		args.redisClient = makeRedisClient(args.redis || {});
 	}
 
 	self.redisClient = args.redisClient;
 }
 
+// Debugging
+OniyiCache.debug = process.env.NODE_DEBUG && /\boniyi-cache\b/.test(process.env.NODE_DEBUG);
+
+function debug() {
+  if (OniyiCache.debug) {
+    console.error('OniyiCache %s', util.format.apply(util, arguments));
+  }
+}
+
+// prototype definitions
 OniyiCache.prototype.hash = function(requestObject) {
 	var self = this;
 
@@ -221,9 +216,9 @@ OniyiCache.prototype.get = function(hash, callback) {
 		if (!data.response) {
 			self.redisClient.del(key, function(err, result) {
 				if (err) {
-					return logWarn(err);
+					return debug(err);
 				}
-				logDebug('removed %d entries from cache {%s} due to invalid data', result, hash);
+				debug('removed %d entries from cache {%s} due to invalid data', result, hash);
 			});
 			return callback(new TypeError('found invalid data in cache'));
 		}
@@ -255,10 +250,9 @@ OniyiCache.prototype.put = function(data, callback) {
 	}
 
 	saveIt.exec(function(err, result) {
-		logDebug('stored data in cache: %s. set timeout: %d', result[0], result[1]);
+		debug('stored data in cache: %s. set timeout: %d', result[0], result[1]);
 		callback(err);
 	});
-
 };
 
 OniyiCache.prototype.purge = function(hash, callback) {
@@ -272,9 +266,9 @@ OniyiCache.prototype.purge = function(hash, callback) {
 
 	self.redisClient.del(key, function(err, result) {
 		if (err) {
-			return logWarn(err);
+			return debug(err);
 		}
-		logDebug('removed %d entries from cache {%s} due to invalid data', result, hash);
+		debug('removed %d entries from cache {%s} due to invalid data', result, hash);
 		callback(err, result === 1);
 	});
 };

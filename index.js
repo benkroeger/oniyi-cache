@@ -34,7 +34,7 @@ var mergeableEvaluatorConfigProperties = [
 ];
 
 var serializableResponseProperties = [
-  // 'headers',
+  // 'headers', // --> headers are treated explicitly when serializing the response object
   'trailers',
   'statusCode',
   'httpVersion',
@@ -77,11 +77,7 @@ function OniyiCache(args) {
 	self.includeRequestPropertiesInHash = _.union(includeRequestPropertiesInHash, (_.isArray(args.includeRequestPropertiesInHash) ? args.includeRequestPropertiesInHash : []));
 	self.excludeRequestHeadersFromHash = _.union(excludeRequestHeadersFromHash, (_.isArray(args.excludeRequestHeadersFromHash) ? args.excludeRequestHeadersFromHash : []));
 
-	if (!args.redisClient) {
-		args.redisClient = makeRedisClient(args.redis || {});
-	}
-
-	self.redisClient = args.redisClient;
+	self.redisClient = (args.redisClient) ? args.redisClient : makeRedisClient(args.redis || {});
 }
 
 // Debugging
@@ -94,7 +90,7 @@ function debug() {
 }
 
 // prototype definitions
-OniyiCache.prototype.hash = function(requestObject) {
+OniyiCache.prototype.makeHash = function(requestObject) {
 	var self = this;
 
 	return XXHash.hash(
@@ -273,4 +269,8 @@ OniyiCache.prototype.purge = function(hash, callback) {
 	});
 };
 
+// deprecation notice
+OniyiCache.prototype.hash = util.deprecate(function(requestObject){
+	return this.makeHash(requestObject);
+}, '"OniyiCache.hash" is deprecated! Use "OniyiCache.makeHash" instead');
 module.exports = OniyiCache;

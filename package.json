@@ -1,6 +1,6 @@
 {
   "name": "oniyi-cache",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "RFC2616 compliant http cache implementation",
   "author": {
     "name": "Benjamin Kroeger",
@@ -23,9 +23,9 @@
     "performance"
   ],
   "dependencies": {
-    "lodash": "^3.7.0",
-    "make-redis-client": "0.0.4",
-    "xxhash": "^0.2.1"
+    "lodash": "~3.8.0",
+    "make-redis-client": "~0.0.6",
+    "xxhash": "~0.2.2"
   },
   "devDependencies": {
     "grunt-cli": "^0.1.13",

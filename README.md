@@ -52,6 +52,9 @@ creates a hash string from the provided request object
 
 The basic concept here has been borrowed from Chris Corbyn's node-http-cache.
 
+## Changelog
+0.0.5 --> added "authorization" to the exclusion list of headers for calculating the request hash
+
 ## License
 
 MIT © [Benjamin Kroeger]()

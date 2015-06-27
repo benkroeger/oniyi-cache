@@ -17,7 +17,7 @@ var includeRequestPropertiesInHash = [
 	'authenticatedUser'
 ];
 
-var excludeRequestHeadersFromHash = ['cookie'];
+var excludeRequestHeadersFromHash = ['cookie', 'authorization'];
 
 var validHostConfigProperties = [
 	'storePrivate',
@@ -273,4 +273,5 @@ OniyiCache.prototype.purge = function(hash, callback) {
 OniyiCache.prototype.hash = util.deprecate(function(requestObject){
 	return this.makeHash(requestObject);
 }, '"OniyiCache.hash" is deprecated! Use "OniyiCache.makeHash" instead');
+
 module.exports = OniyiCache;

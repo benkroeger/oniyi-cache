@@ -2,41 +2,47 @@
   "name": "oniyi-cache",
   "version": "0.0.7",
   "description": "RFC2616 compliant http cache implementation",
-  "author": {
-    "name": "Benjamin Kroeger",
-    "email": "benjamin.kroeger@gmail.com"
-  },
-  "repository": "benkroeger/oniyi-cache",
   "license": "MIT",
-  "files": [
-    "index.js",
-    "lib"
-  ],
+  "author": "Benjamin Kroeger <benjamin.kroeger@gmail.com>",
+  "main": "lib/index.js",
   "keywords": [
     "oniyi-cache",
     "oniyi",
     "cache",
     "request",
-    "requestor",
     "redis",
     "http",
     "performance"
   ],
-  "dependencies": {
-    "lodash": "3.10.1",
-    "redis": "^2.0.0"
-  },
-  "devDependencies": {
-    "grunt-cli": "^0.1.13",
-    "grunt-contrib-jshint": "^0.11.0",
-    "grunt-contrib-nodeunit": "^0.4.1",
-    "grunt-contrib-watch": "^0.6.1",
-    "grunt-mocha-cli": "^1.12.0",
-    "jshint-stylish": "^1.0.1",
-    "load-grunt-tasks": "^3.1.0",
-    "time-grunt": "^1.1.0"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/benkroeger/oniyi-cache.git"
   },
   "scripts": {
-    "test": "grunt"
+    "test": "ava -v",
+    "coverage": "nyc npm run test && nyc report --reporter=html",
+    "lint": "eslint --ignore-path .gitignore .",
+    "lint-fix": "eslint --fix .",
+    "format": "prettier-eslint --write \"lib/**/*.js\" \"test/**/*.js\""
+  },
+  "dependencies": {
+    "lodash": "3.10.1",
+    "redis": "^2.0.0",
+    "debug": "^3.1.0"
+  },
+  "devDependencies": {
+    "ava": "^0.20.0",
+    "babel-eslint": "^7.2.3",
+    "eslint": "^3.15.0",
+    "eslint-config-oniyi": "^4.4.0",
+    "eslint-plugin-ava": "^4.2.1",
+    "nyc": "^10.3.2",
+    "prettier-eslint-cli": "^4.4.0"
+  },
+  "files": [
+    "lib/"
+  ],
+  "directories": {
+    "test": "test"
   }
 }

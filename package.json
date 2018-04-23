@@ -1,6 +1,6 @@
 {
   "name": "oniyi-cache",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "RFC2616 compliant http cache implementation",
   "license": "MIT",
   "author": "Benjamin Kroeger <benjamin.kroeger@gmail.com>",

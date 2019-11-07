@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "debug": "4.1.1",
-    "lodash": "4.17.11",
+    "lodash": "4.17.13",
     "redis": "^2.0.0"
   },
   "devDependencies": {
